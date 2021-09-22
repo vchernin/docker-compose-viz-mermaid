@@ -6,14 +6,17 @@ import java.nio.file.Path
 import java.util.*
 
 enum class MermaidOutput {
-    TEXT, EDITOR, PREVIEW, PNG;
+    TEXT, MARKDOWN, EDITOR, PREVIEW, PNG;
 
-    fun process(mermaidGraph: String, outputFile: Path? = null) {
+    fun process(mermaidGraph: MermaidGraph, outputFile: Path? = null, withBackground: Boolean = false) {
+        val text = mermaidGraph.build(withBackground)
+        fun asBase64() = text.toBase64(mermaidGraph.theme)
         when (this) {
-            TEXT -> outputFile.print(mermaidGraph)
-            EDITOR -> println("https://mermaid-js.github.io/mermaid-live-editor/edit#${mermaidGraph.toBase64()}")
-            PREVIEW -> println("https://mermaid-js.github.io/mermaid-live-editor/view/#${mermaidGraph.toBase64()}")
-            PNG -> println("Saved image to ${download("https://mermaid.ink/img/${mermaidGraph.toBase64()}", outputFile)}")
+            TEXT -> outputFile.print(text)
+            MARKDOWN -> outputFile.print("```mermaid\n$text\n```")
+            EDITOR -> println("https://mermaid-js.github.io/mermaid-live-editor/edit#${asBase64()}")
+            PREVIEW -> println("https://mermaid-js.github.io/mermaid-live-editor/view/#${asBase64()}")
+            PNG -> println("Saved image to ${downloadPng("https://mermaid.ink/img/${asBase64()}", outputFile)}")
         }
     }
 
@@ -23,14 +26,14 @@ enum class MermaidOutput {
         } ?: println(content)
     }
 
-    private fun String.toBase64(): String {
-        val escapedCode = this.replace("\"", "\\\"").replace("\n", "\\n")
-        val data =
-            "{\"code\":\"$escapedCode\",\"mermaid\": {\"theme\": \"default\"},\"updateEditor\":true,\"autoSync\":true,\"updateDiagram\":true}"
+    private fun String.toBase64(theme: GraphTheme = GraphTheme.DEFAULT): String {
+        val escapedCode = replace("\"", "\\\"").replace("\n", "\\n")
+        val data = "{\"code\":\"$escapedCode\"," +
+                "\"mermaid\": {\"theme\": \"${theme.name.lowercase()}\"},\"updateEditor\":true,\"autoSync\":true,\"updateDiagram\":true}"
         return Base64.getEncoder().encodeToString(data.toByteArray()).trimEnd('=')
     }
 
-    private fun download(url: String, outputPath: Path? = null): String {
+    private fun downloadPng(url: String, outputPath: Path? = null): String {
         val outputFile = outputPath?.toFile() ?: File("image.png")
         URL(url).openStream().transferTo(outputFile.outputStream())
         return outputFile.absolutePath

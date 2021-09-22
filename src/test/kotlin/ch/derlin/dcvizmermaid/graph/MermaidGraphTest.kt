@@ -123,19 +123,36 @@ class MermaidGraphTest {
 
         assertThat(graph.build()).isEqualTo(
             """
-        flowchart TB
-          service x-.-x db((db))
-          web -. REST .-> service
-        
-          n{{none}}
-        
-          classDef W
-          class web W
+          %%{init: {'theme': 'default'}}%%
+          flowchart TB
+            service x-.-x db((db))
+            web -. REST .-> service
+          
+            n{{none}}
+          
+            classDef W
+            class web W
+        """.trimIndent() + "\n"
+        )
+
+        assertThat(graph.build(withBackground = true)).isEqualTo(
+            """
+          %%{init: {'theme': 'default', 'themeVariables': {'clusterBkg': '#FFF', 'clusterBorder': '#FFF'}}}%%
+          flowchart LR
+          subgraph " "
+            service x-.-x db((db))
+            web -. REST .-> service
+          
+            n{{none}}
+          
+            classDef W
+            class web W
+          end
         """.trimIndent() + "\n"
         )
     }
 
     private fun buildAndGetLines(graph: MermaidGraph): List<String> =
-        graph.build().lines().drop(1).filter { it.isNotEmpty() }.map { it.trim() }
+        graph.build().lines().drop(2).filter { it.isNotEmpty() }.map { it.trim() }
 
 }
