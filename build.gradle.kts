@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "ch.derlin"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -21,7 +21,7 @@ dependencies {
 
 tasks.jar {
     manifest {
-        attributes += "main-Class" to "ch.derlin.dc2mermaid.CliKt"
+        attributes += "main-Class" to "ch.derlin.dcvizmermaid.CliKt"
     }
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }

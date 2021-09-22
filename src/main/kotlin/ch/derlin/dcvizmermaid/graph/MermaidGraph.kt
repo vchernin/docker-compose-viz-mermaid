@@ -3,7 +3,7 @@ package ch.derlin.dcvizmermaid.graph
 import ch.derlin.dcvizmermaid.graph.CONNECTOR.ARROW
 import ch.derlin.dcvizmermaid.graph.Shape.NONE
 
-class MermaidGraph(val order: String = "TB") {
+class MermaidGraph(val direction: GraphOrientation = GraphOrientation.TB) {
 
     private val nodes: MutableMap<String, Node> = mutableMapOf()
     private val links: MutableList<Link> = mutableListOf()
@@ -27,7 +27,7 @@ class MermaidGraph(val order: String = "TB") {
 
     fun build(): String {
         val builder = StringBuilder()
-        builder.appendLine("flowchart $order")
+        builder.appendLine("flowchart $direction")
 
         links
             .map { formatLink(it) }

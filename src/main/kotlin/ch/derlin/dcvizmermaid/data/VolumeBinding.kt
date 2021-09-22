@@ -19,7 +19,7 @@ data class VolumeBinding(
         requireNotNull(target ?: source) { "A volume binding should at least have a source or target defined" }
     }
 
-    enum class VolumeType { VOLUME, BIND }
+    enum class VolumeType { VOLUME, BIND, TMPFS }
 
     companion object {
         fun parse(service: String, volumeMapping: Any): VolumeBinding? = when (volumeMapping) {

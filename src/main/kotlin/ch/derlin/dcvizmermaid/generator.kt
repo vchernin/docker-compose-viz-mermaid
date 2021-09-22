@@ -5,9 +5,10 @@ import ch.derlin.dcvizmermaid.data.VolumeBinding.VolumeType
 import ch.derlin.dcvizmermaid.graph.*
 import ch.derlin.dcvizmermaid.graph.CONNECTOR.*
 import ch.derlin.dcvizmermaid.graph.Shape.*
+import ch.derlin.dcvizmermaid.graph.toValidId
 import ch.derlin.dcvizmermaid.helpers.YamlUtils
 
-val knownDbs = listOf("db", "redis", "mysql", "postgres", "postgresql")
+val knownDbs = listOf("db", "database", "redis", "mysql", "postgres", "postgresql", "mongo", "mongodb")
 
 fun generateMermaid(
     dockerComposeContent: String,
@@ -20,18 +21,17 @@ fun generateMermaid(
 ): String {
 
     val dc = DockerCompose(YamlUtils.load(dockerComposeContent))
-    val graph = MermaidGraph()
+    val graph = MermaidGraph(direction)
 
     dc.services.forEach {
         graph.addNode(it.name, shape = if (it.name in knownDbs) CYLINDER else null)
     }
 
     val volumeIds = if (!withVolumes) listOf() else {
-        val idGen = idGenerator("V")
+        var num = 0
         dc.volumeBindings.map { volume ->
-            val id = (volume.externalRef ?: volume.source ?: idGen()).toValidId()
-            val details = if (volume.type == VolumeType.VOLUME) "" else "(${volume.type})"
-            graph.addNode((volume.source ?: "<empty>") + details, id, if (volume.inline) HEXAGON else RECT_ROUNDED)
+            val id = "V" + (volume.externalRef ?: volume.source ?: num++).toValidId()
+            graph.addNode(volume.source ?: volume.externalRef ?: "&nbsp;", id, volume.type.toShape())
             graph.addLink(id, volume.service, connector = if (volume.ro) DOT_X else DOT_DBL_X, text = volume.target)
             id
         }

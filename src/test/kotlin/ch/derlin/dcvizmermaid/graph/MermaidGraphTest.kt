@@ -11,7 +11,7 @@ class MermaidGraphTest {
     @Test
     fun `add node ensures valid ids`() {
         val n1 = "some_node-1"
-        val n2 = "@@node-#2"
+        val n2 = "/path/to/x"
 
         val graph = MermaidGraph()
         graph.addNode(n1)
@@ -19,13 +19,13 @@ class MermaidGraphTest {
         graph.addNode("n3")
 
         graph.addLink(n1, n2)
-        graph.addLink(n2, "n3")
         graph.addLink(n1, "n3")
+        graph.addLink(n2, "n3")
 
-        assertThat(buildAndGetLines(graph)).containsExactlyInAnyOrder(
-            "somenode1[$n1] --> node2{{$n2}}",
+        assertThat(buildAndGetLines(graph)).containsExactly(
+            "somenode1[$n1] --> pathtox{{$n2}}",
             "somenode1 --> n3",
-            "node2 --> n3"
+            "pathtox --> n3",
         )
     }
 
@@ -94,6 +94,18 @@ class MermaidGraphTest {
             graph.addNode("N2")
             assertThat { graph.build() }.isSuccess()
         }
+    }
+
+    @Test
+    fun `only text with strange characters is quoted`() {
+        val graph = MermaidGraph()
+        graph.addNode("[node @ 1]", "n1")
+        graph.addNode("node 2!", "n2")
+        graph.addLink("n1", "n2", text = "-> #test")
+
+        assertThat(buildAndGetLines(graph)).containsOnly(
+            "n1[\"[node @ 1]\"] -- \"-> #test\" --> n2[node 2!]",
+        )
     }
 
     @Test

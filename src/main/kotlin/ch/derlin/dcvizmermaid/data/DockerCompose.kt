@@ -7,11 +7,8 @@ import ch.derlin.dcvizmermaid.helpers.YamlUtils.getByPath
 
 
 class DockerCompose(private val content: YAML) {
-    // no version => version 1
-    val isVersion1 = content.getOrDefault("version", 1) == 1
-
     val services: List<Service> by lazy {
-        val root = if (isVersion1) content else content.getByPath("services", type = Map::class) as YAML
+        val root = if ("services" !in content) content else content.getByPath("services", type = Map::class) as YAML
         root
             .filterNot { it.key == "version" }
             .filterNot { it.value == null }
@@ -30,7 +27,7 @@ class DockerCompose(private val content: YAML) {
     }
 
     private fun volumes(): Map<String, String?> = if (!content.containsKey("volumes")) mapOf() else {
-        (content["volumes"] as YAML).mapValues { it.value as String? }
+        (content["volumes"] as YAML).mapValues { it.value as? String? }
     }
 
     companion object {
