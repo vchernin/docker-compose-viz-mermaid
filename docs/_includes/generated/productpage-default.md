@@ -1,5 +1,4 @@
 ```mermaid
-%%{init: {'theme': 'default'}}%%
 flowchart TB
   Vdatabases{{./databases}} x-. /docker-entrypoint-initdb.d .-x mongodb[(mongodb)]
   productpage --> reviews

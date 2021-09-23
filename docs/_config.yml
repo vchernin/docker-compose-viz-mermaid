@@ -1,3 +1,8 @@
+domain: derlin.github.io
+url: https://derlin.github.io
+baseurl: /docker-compose-viz-mermaid/
+repository: derlin/docker-compose-viz
+
 title: "docker-compose-viz Mermaid"
 remote_theme: pmarsceill/just-the-docs
 
