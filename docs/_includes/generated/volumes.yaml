@@ -1,0 +1,29 @@
+# vc
+services:
+  app:
+    image: some/image:1.2.3
+    ports:
+      - 80
+    volumes:
+      - type: volume
+        source: named-volume
+        target: /nv
+
+      - type: bind
+        source: /host/bind-ro
+        target: /bind/ro
+        read_only: true
+
+      - type: bind
+        source: /host/bind-rw
+        target: /bind/rw
+
+      - type: tmpfs
+        target: /tmpfs
+
+      - type: npipe
+        source: /host/npipe.sock
+        target: /npipe.sock
+
+volumes:
+  named-volume:

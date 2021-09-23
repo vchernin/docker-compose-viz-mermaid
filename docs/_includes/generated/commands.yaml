@@ -1,0 +1,5 @@
+- options: '-h'
+  path: 'jekyll/_includes/help.md'
+
+- input: examples/full/contactapp.yaml
+  options: '-p -f svg -o jekyll/assets/contactapp-light.svg'
