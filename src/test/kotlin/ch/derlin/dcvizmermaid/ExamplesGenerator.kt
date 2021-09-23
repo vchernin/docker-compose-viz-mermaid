@@ -8,9 +8,7 @@ import ch.derlin.dcvizmermaid.graph.MermaidOutput
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Path
-import kotlin.test.Ignore
 
-@Ignore
 class ExamplesGenerator {
 
     @Test

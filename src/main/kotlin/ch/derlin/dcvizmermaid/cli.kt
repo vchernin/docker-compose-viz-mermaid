@@ -26,7 +26,7 @@ class Cli : CliktCommand(
     ```
     * 'text' (default) outputs the mermaid graph (use -o to output to a file instead of stdout);
     * 'markdown' is same as text, but wraps the graph text in '```mermaid```'
-    * 'png' generates the image and saves it 'image.png' (use -o to change the destination);
+    * 'png' or 'svg' generates the image and saves it 'image.[png|svg]' (use -o to change the destination);
     * 'editor' // 'preview' generates a link to the mermaid online editor, and print it to the console.
     
     When using theme and classes, the output may become hard to read depending on the background. 

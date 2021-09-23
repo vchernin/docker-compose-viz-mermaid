@@ -6,17 +6,18 @@ import java.nio.file.Path
 import java.util.*
 
 enum class MermaidOutput {
-    TEXT, MARKDOWN, EDITOR, PREVIEW, PNG;
+    TEXT, MARKDOWN, EDITOR, PREVIEW, PNG, SVG;
 
     fun process(mermaidGraph: MermaidGraph, outputFile: Path? = null, withBackground: Boolean = false) {
         val text = mermaidGraph.build(withBackground)
         fun asBase64() = text.toBase64(mermaidGraph.theme)
         when (this) {
             TEXT -> outputFile.print(text)
-            MARKDOWN -> outputFile.print("```mermaid\n$text\n```")
+            MARKDOWN -> outputFile.print("```mermaid\n$text```")
             EDITOR -> println("https://mermaid-js.github.io/mermaid-live-editor/edit#${asBase64()}")
             PREVIEW -> println("https://mermaid-js.github.io/mermaid-live-editor/view/#${asBase64()}")
-            PNG -> println("Saved image to ${downloadPng("https://mermaid.ink/img/${asBase64()}", outputFile)}")
+            PNG -> println("Saved image to ${downloadImage("https://mermaid.ink/img/${asBase64()}", outputFile)}")
+            SVG -> println("Saved image to ${downloadImage("https://mermaid.ink/svg/${asBase64()}", outputFile, ext = "svg")}")
         }
     }
 
@@ -33,8 +34,8 @@ enum class MermaidOutput {
         return Base64.getEncoder().encodeToString(data.toByteArray()).trimEnd('=')
     }
 
-    private fun downloadPng(url: String, outputPath: Path? = null): String {
-        val outputFile = outputPath?.toFile() ?: File("image.png")
+    private fun downloadImage(url: String, outputPath: Path? = null, ext: String = "png"): String {
+        val outputFile = outputPath?.toFile() ?: File("image.$ext")
         URL(url).openStream().transferTo(outputFile.outputStream())
         return outputFile.absolutePath
     }

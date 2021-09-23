@@ -37,8 +37,8 @@ class MermaidGraph(val direction: GraphOrientation = GraphOrientation.TB, val th
         // can then be styled using clusterBkg (see GraphTheme)
         // the direction will be inversed though when using a subgraph !
         builder.appendLine(theme.shebang(withBackground))
-        builder.appendLine("flowchart " + if(withBackground) direction.inverse() else direction)
-        if(withBackground) builder.appendLine("subgraph \" \"")
+        builder.appendLine("flowchart " + if (withBackground) direction.inverse() else direction)
+        if (withBackground) builder.appendLine("subgraph \" \"")
 
         links
             .map { formatLink(it) }
@@ -53,7 +53,7 @@ class MermaidGraph(val direction: GraphOrientation = GraphOrientation.TB, val th
 
         classes.forEach { builder.appendIndentedLine(it) }
 
-        if(withBackground) builder.appendLine("end")
+        if (withBackground) builder.appendLine("end")
         return builder.toString()
     }
 

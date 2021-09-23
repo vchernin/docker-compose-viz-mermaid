@@ -94,7 +94,7 @@ class DockerComposeTest : AbstractTestBase() {
                 ).forEach { (vb, modified) ->
                 assertThat(vb)
                     .transform { DockerCompose.processVolumes(namedVolumes, listOf(vb)) }
-                    .isEqualTo(listOf(if(modified) vb.copy(type = VolumeBinding.VolumeType.VOLUME) else vb))
+                    .isEqualTo(listOf(if (modified) vb.copy(type = VolumeBinding.VolumeType.VOLUME) else vb))
             }
         }
     }

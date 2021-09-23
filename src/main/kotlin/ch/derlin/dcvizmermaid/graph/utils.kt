@@ -15,5 +15,5 @@ internal fun StringBuilder.appendIndentedLine(line: String) = appendLine("  $lin
 internal fun Any.toValidId(): String = toString().replace("[^a-zA-Z0-9]".toRegex(), "").ifBlank { "H" + this.hashCode() }
 
 internal fun Any.toValidName() = toString().replace("\"", "'").let {
-        if("[\\w !?_/':,.-]*".toRegex().matchEntire(it) == null) "\"$it\"" else it
-    }
+    if ("[\\w !?_/':,.-]*".toRegex().matchEntire(it) == null) "\"$it\"" else it
+}
