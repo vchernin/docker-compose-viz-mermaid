@@ -1,5 +1,4 @@
 ---
-layout: default
 title:  Product Page
 parent: Examples
 ---

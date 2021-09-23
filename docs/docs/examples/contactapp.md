@@ -1,6 +1,5 @@
 ---
-layout: default
-title:  Contact app
+title:  Contact App
 parent: Examples
 ---
 

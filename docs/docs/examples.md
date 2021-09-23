@@ -1,10 +1,10 @@
 ---
-layout: default
 title:  Examples
 has_children: true
 ---
 
-Examples:
+# Examples
 
 - [Contact App]({{ site.baseurl }}{% link docs/examples/contactapp.md %})
 - [Product Page]({{ site.baseurl }}{% link docs/examples/productpage.md %})
+

@@ -1,9 +1,15 @@
 ---
-layout: page
 title:  Usage
-toc: true
 ---
 
-# Usage
+{% include toc.md title='Usage' %}
 
-blabla
+## Command lines
+
+blaflkajsdfa sdfa fsa 
+
+## parameteres
+
+### asdléfj 
+
+### xx yy
