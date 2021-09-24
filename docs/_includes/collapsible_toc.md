@@ -1,7 +1,3 @@
-# {{ include.title }}
-{: .no_toc }
-
-
 <details open markdown="block">
   <summary>
     Table of contents

@@ -14,7 +14,12 @@ flowchart TB
   apiuser --> zookeeper
   apiuser --> kafka
   kafka --> zookeeper
+  P0((8081)) -.-> apiuser
+  P1((8082)) -.-> apicontactbook
+  P2((9092)) -.-> kafka
 
   classDef volumes fill:#0f544e,stroke:#23968b
   class Vsettings,Vapiuser,V0,Vsettings,Vapicontactbook,Vscriptssql volumes
+  classDef ports fill:#5a5757,stroke:#b6c2ff
+  class P0,P1,P2 ports
 ```

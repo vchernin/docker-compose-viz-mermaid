@@ -9,34 +9,47 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Path
-import kotlin.io.path.bufferedWriter
 
 class ExamplesGenerator {
 
     companion object {
-        private const val outputPathImages = "jekyll/assets/generated"
-        private const val outputPathText = "jekyll/_includes/generated"
+        private val genDocs = System.getenv("GEN_DOCS") == "1"
+        private val outputPathImages = if (genDocs) "docs/assets/generated" else "target/generated"
+        private val outputPathText = if (genDocs) "docs/_includes/generated" else "target/generated"
+
 
         @BeforeAll
         @JvmStatic
         fun cleanup() {
+            println("Writing to $outputPathImages and $outputPathText")
             listOf(outputPathImages, outputPathText).map { File(it) }.forEach {
                 it.deleteRecursively()
-                it.mkdir()
+                it.mkdirs()
             }
         }
     }
 
     @Test
+    fun `generate help`() {
+        assertThat {
+            File("$outputPathText/help.md").writeText(Cli().getFormattedHelp())
+        }.isSuccess()
+    }
+
+    @Test
     fun `generate examples`() {
         assertAll {
-            File("examples").walkTopDown()
+            File("src/test/resources/examples/full").walkTopDown()
                 .filter { it.isFile && it.extension == "yaml" }
-                .forEach { assertThat { processYaml(it) }.isSuccess() }
+                .forEach { assertThat { processFullExamples(it) }.isSuccess() }
+
+            File("src/test/resources/examples/partial").walkTopDown()
+                .filter { it.isFile && it.extension == "yaml" }
+                .forEach { assertThat { processYamlPartial(it) }.isSuccess() }
         }
     }
 
-    private fun processYaml(file: File) {
+    private fun processFullExamples(file: File) {
 
         file.copyTo(File("$outputPathText/${file.name}"))
 
@@ -48,9 +61,9 @@ class ExamplesGenerator {
             val graph = generateMermaidGraph(
                 text,
                 theme = theme,
-                withPorts = 'p' in options,
-                withVolumes = 'v' in options,
-                withClasses = 'c' in options,
+                withPorts = 'P' !in options,
+                withVolumes = 'V' !in options,
+                withClasses = 'C' !in options,
             )
 
             MermaidOutput.MARKDOWN.process(graph, Path.of("$outputPathText/$basename.md"), withBackground = false)
@@ -59,8 +72,18 @@ class ExamplesGenerator {
         }
     }
 
-    private fun File.outputPathForImages(ext: String) =
-        Path.of("jekyll/assets/generated/${nameWithoutExtension}$ext")
+    private fun processYamlPartial(file: File) {
+        val text = file.readText()
 
+        // only images
+        GraphTheme.values().forEach { theme ->
+            val basename = "${file.nameWithoutExtension}-${theme.name.lowercase()}"
+            val graph = generateMermaidGraph(
+                text, theme = theme,
+                withPorts = true, withVolumes = true, withClasses = true, withImplicitLinks = true
+            )
 
+            MermaidOutput.SVG.process(graph, Path.of("$outputPathImages/$basename.svg"), withBackground = true)
+        }
+    }
 }

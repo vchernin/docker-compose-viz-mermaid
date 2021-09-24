@@ -3,7 +3,7 @@ url: https://derlin.github.io
 baseurl: /docker-compose-viz-mermaid/
 repository: derlin/docker-compose-viz
 
-title: "docker-compose-viz Mermaid"
+title: "Docker Compose Viz (Mermaid)"
 remote_theme: pmarsceill/just-the-docs
 
 color_scheme: light
